@@ -1,0 +1,7 @@
+package com.deepank.careerraft.discovery;
+import com.deepank.careerraft.domain.Job;import org.springframework.stereotype.Component;import java.util.*;
+@Component public class AshbyJobSource implements JobSource{
+ private final SimpleHttpClient http;public AshbyJobSource(SimpleHttpClient h){http=h;}public String provider(){return "ashby";}
+ public List<Job>fetch(SourceDefinition d){Map<String,Object>p=http.getJson("https://api.ashbyhq.com/posting-api/job-board/"+d.identifier()+"?includeCompensation=true");Object raw=p.get("jobs");if(!(raw instanceof List<?>l))return List.of();List<Job>out=new ArrayList<>();for(Object z:l)if(z instanceof Map<?,?>rawMap){Map<String,Object>x=cast(rawMap);String id=Objects.toString(x.get("id"),""),u=Objects.toString(x.getOrDefault("jobUrl",x.get("applyUrl")),""),t=Objects.toString(x.get("title"),"").trim();if(id.isBlank()||u.isBlank())continue;String loc=Objects.toString(x.get("location"),"");if(x.get("location") instanceof Map<?,?>lm)loc=Objects.toString(lm.get("name"),"");String comp=x.get("compensation")==null?null:String.valueOf(x.get("compensation"));out.add(new Job(SourceSupport.jobId(d.name(),id),d.name(),id,d.identifier(),t,u,org.jsoup.Jsoup.parse(Objects.toString(x.getOrDefault("descriptionHtml",x.get("description")),"")).text(),loc,Objects.toString(x.get("workplaceType"),null),null,comp,null,null));}return out;}
+ @SuppressWarnings("unchecked")private static Map<String,Object>cast(Map<?,?>m){return(Map<String,Object>)(Map<?,?>)m;}
+}

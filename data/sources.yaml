@@ -1,0 +1,26 @@
+version: 1
+sources:
+  - id: SRC-USER
+    type: user_statement
+    authority: highest
+  - id: SRC-RESUME
+    type: existing_resume
+    path: resume/resume.tex
+    authority: legacy_reference
+  - id: SRC-GITHUB
+    type: github
+    profile: https://github.com/Deepank-Khera-1204
+    repositories:
+      - Deepank-Khera-1204/my-blockchain
+      - Deepank-Khera-1204/my-weather
+      - Deepank-Khera-1204/stock-info-app
+      - Deepank-Khera-1204/Data-Analysis-Deepu
+  - id: SRC-GITLAB
+    type: gitlab
+    profile: https://gitlab.com/Deepank-Khera-1204
+    repositories:
+      - Deepank-Khera-1204/rate-limiter
+      - Deepank-Khera-1204/career-raft
+  - id: SRC-LINKEDIN
+    type: linkedin
+    profile: https://www.linkedin.com/in/deepank-khera-7723171b4/

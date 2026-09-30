@@ -1,0 +1,13 @@
+{
+  "source_file": "resume.tex",
+  "status": "integrated_and_compile_verified",
+  "mutation_policy": "content_only",
+  "compiled_pdf": "build/resume.pdf",
+  "page_count": 1,
+  "latex_engine": "latexmk + pdflatex",
+  "source_of_truth": "user_supplied_resume",
+  "notes": [
+    "Do not treat the target comment in the LaTeX header as a permanent target; target role is job-specific metadata.",
+    "Education CGPA remains exactly as supplied in the master resume until the candidate changes it."
+  ]
+}

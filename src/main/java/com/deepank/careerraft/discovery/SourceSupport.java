@@ -1,0 +1,3 @@
+package com.deepank.careerraft.discovery;
+import java.nio.charset.StandardCharsets;import java.time.*;import java.util.UUID;
+public final class SourceSupport {private SourceSupport(){} public static String jobId(String source,String externalId){return UUID.nameUUIDFromBytes(("career-raft:"+source+":"+externalId).getBytes(StandardCharsets.UTF_8)).toString();} public static Instant parseIso(String v){if(v==null||v.isBlank())return null;try{Instant i=Instant.parse(v.trim().replace("Z","Z"));return i;}catch(Exception e){try{return OffsetDateTime.parse(v).toInstant();}catch(Exception ignored){return null;}}}}

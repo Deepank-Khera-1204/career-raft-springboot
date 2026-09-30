@@ -1,0 +1,7 @@
+package com.deepank.careerraft.discovery;
+import com.deepank.careerraft.domain.Job;import org.springframework.stereotype.Component;import java.io.*;import java.util.*;import javax.xml.parsers.*;import org.w3c.dom.*;
+@Component public class LeverXmlJobSource implements JobSource{
+ private final SimpleHttpClient http;public LeverXmlJobSource(SimpleHttpClient h){http=h;}public String provider(){return "lever_xml";}
+ public List<Job>fetch(SourceDefinition d){String xml=http.getText("https://api.lever.co/v0/postings/"+d.identifier()+"?mode=xml","application/xml,text/xml,text/plain,*/*");try{Document doc=DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes()));NodeList ns=doc.getElementsByTagName("job");List<Job>out=new ArrayList<>();for(int i=0;i<ns.getLength();i++){Element e=(Element)ns.item(i);String id=text(e,"id"),t=text(e,"position"),u=text(e,"apply_url");if(id.isBlank()||t.isBlank()||u.isBlank())continue;out.add(new Job(SourceSupport.jobId(d.name(),id),d.name(),id,d.identifier(),t,u,org.jsoup.Jsoup.parse(text(e,"description")).text(),empty(text(e,"location")),null,null,empty(text(e,"salary")),null,null));}return out;}catch(Exception e){throw new IllegalStateException("Unable to parse Lever XML",e);}}
+ private String text(Element p,String n){NodeList x=p.getElementsByTagName(n);return x.getLength()==0?"":x.item(0).getTextContent().trim();}private String empty(String s){return s.isBlank()?null:s;}
+}

@@ -1,0 +1,24 @@
+thresholds:
+  deep_analysis: 70
+  package_generation: 80
+  priority_email: 90
+
+weights:
+  technical_stack: 25
+  role_seniority: 15
+  qualifications: 15
+  project_evidence: 15
+  location_work_mode: 10
+  compensation: 10
+  domain: 5
+  growth: 5
+
+rules:
+  unknown_salary_score_fraction: 0.5
+  unknown_location_score_fraction: 0.5
+  scoring_version: "0.6"
+
+semantic:
+  max_bonus: 10
+  min_relevance: 0.55
+  semantic_package_promotion_alignment: 0.80

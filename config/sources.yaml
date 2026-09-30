@@ -1,0 +1,224 @@
+# Career Raft public job sources.
+# Only publicly accessible job-board feeds with supported adapters are enabled.
+# Workday sources use the public CXS endpoint behind the employer career site.
+
+sources:
+  - name: greenhouse_stripe
+    provider: greenhouse
+    identifier: stripe
+    enabled: true
+    min_hours: 3
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [3, 4, 6, 8]
+    max_requests_per_day: 6
+
+  - name: greenhouse_coinbase
+    provider: greenhouse
+    identifier: coinbase
+    enabled: true
+    min_hours: 3
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [3, 4, 6, 8]
+    max_requests_per_day: 6
+
+  - name: greenhouse_rubrik
+    provider: greenhouse
+    identifier: rubrik
+    enabled: true
+    min_hours: 3
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [3, 4, 6, 8]
+    max_requests_per_day: 6
+
+  - name: greenhouse_razorpay
+    provider: greenhouse
+    identifier: razorpaysoftwareprivatelimited
+    enabled: true
+    min_hours: 3
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [3, 4, 6, 8]
+    max_requests_per_day: 6
+
+  # Postman's public Greenhouse JSON board currently returns HTTP 404.
+  # Use the live hosted job board and bounded public detail pages instead.
+  - name: greenhouse_postman
+    provider: career_page
+    identifier: Postman
+    enabled: true
+    min_hours: 3
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [3, 4, 6, 8]
+    max_requests_per_day: 6
+    options:
+      list_url: "https://job-boards.greenhouse.io/postman"
+      job_path_prefix: "/postman/jobs/"
+      title_keywords:
+        - engineer
+        - developer
+        - devops
+        - cloud
+        - platform
+        - backend
+        - frontend
+        - fullstack
+      max_detail_requests: 8
+
+  - name: greenhouse_zetaglobal
+    provider: greenhouse
+    identifier: zetaglobal
+    enabled: true
+    min_hours: 3
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [3, 4, 6, 8]
+    max_requests_per_day: 6
+
+  - name: lever_meesho
+    provider: lever_xml
+    identifier: meesho
+    enabled: true
+    min_hours: 3
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [3, 4, 6, 8]
+    max_requests_per_day: 6
+
+  # PhonePe's former Greenhouse endpoint returns HTTP 404; keep disabled
+  # until a current public feed is verified.
+  - name: greenhouse_phonepe
+    provider: greenhouse
+    identifier: phonepe
+    enabled: false
+    min_hours: 3
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [3, 4, 6, 8]
+    max_requests_per_day: 6
+
+  # Workday CXS boards. We search for software-engineering roles and only
+  # fetch full JDs for a bounded number of results to control request volume.
+  - name: workday_salesforce
+    provider: workday
+    identifier: salesforce
+    enabled: true
+    min_hours: 4
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [4, 6, 8]
+    max_requests_per_day: 4
+    options:
+      tenant: salesforce
+      shard: wd12
+      site: External_Career_Site
+      search_text: "software engineer"
+      max_list_pages: 1
+      max_detail_requests: 8
+
+  - name: workday_adobe
+    provider: workday
+    identifier: adobe
+    enabled: true
+    min_hours: 4
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [4, 6, 8]
+    max_requests_per_day: 4
+    options:
+      tenant: adobe
+      shard: wd5
+      site: external_experienced
+      search_text: "software engineer"
+      max_list_pages: 1
+      max_detail_requests: 8
+
+  - name: workday_nvidia
+    provider: workday
+    identifier: nvidia
+    enabled: true
+    min_hours: 4
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [4, 6, 8]
+    max_requests_per_day: 4
+    options:
+      tenant: nvidia
+      shard: wd5
+      site: NVIDIAExternalCareerSite
+      search_text: "software engineer"
+      max_list_pages: 1
+      max_detail_requests: 8
+
+  - name: workday_mastercard
+    provider: workday
+    identifier: mastercard
+    enabled: true
+    min_hours: 4
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [4, 6, 8]
+    max_requests_per_day: 4
+    options:
+      tenant: mastercard
+      shard: wd1
+      site: CorporateCareers
+      search_text: "software engineer"
+      max_list_pages: 1
+      max_detail_requests: 8
+
+  # State Street's public Workday board is especially relevant to banking,
+  # payments and backend engineering in India.
+  - name: workday_statestreet
+    provider: workday
+    identifier: statestreet
+    enabled: true
+    min_hours: 4
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [4, 6, 8]
+    max_requests_per_day: 4
+    options:
+      tenant: statestreet
+      shard: wd1
+      site: Global
+      search_text: "software engineer"
+      max_list_pages: 1
+      max_detail_requests: 8
+
+  # Google Careers public job-search page. The page exposes public job-detail
+  # links; Career Raft follows a bounded number and extracts only job-specific
+  # content from each detail page.
+  - name: google_careers
+    provider: google_careers
+    identifier: Google
+    enabled: true
+    min_hours: 4
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [4, 6, 8]
+    max_requests_per_day: 4
+    options:
+      query: "software engineer"
+      locations: ["India"]
+      max_pages: 2
+      max_jobs: 40
+
+  # Atlassian's canonical public jobs page exposes canonical Atlassian
+  # detail links under /company/careers/details/<job-id>.
+  - name: atlassian_careers
+    provider: atlassian_careers
+    identifier: Atlassian
+    enabled: true
+    min_hours: 4
+    max_hours: 8
+    jitter_minutes: 30
+    allowed_intervals_hours: [4, 6, 8]
+    max_requests_per_day: 4
+    options:
+      list_url: "https://www.atlassian.com/company/careers/all-jobs"
+      listings_url: "https://www.atlassian.com/endpoint/careers/listings"
+      max_detail_requests: 8

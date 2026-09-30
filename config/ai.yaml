@@ -1,0 +1,16 @@
+enabled: true
+provider: gemini
+model: gemini-3.5-flash-lite
+api_key_env: GEMINI_API_KEY
+
+# Bounded semantic analysis is enabled for the unattended runner.
+max_calls_per_run: 10
+max_output_tokens: 1800
+thinking_level: low
+min_deterministic_score_for_llm: 45
+
+policy:
+  purpose: "Understand job requirements and match them to confirmed Career KB evidence."
+  never_invent: true
+  never_rewrite_evidence: true
+  output_json_only: true

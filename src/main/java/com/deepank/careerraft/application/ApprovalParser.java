@@ -1,0 +1,2 @@
+package com.deepank.careerraft.application;
+import java.util.regex.*;public final class ApprovalParser{private ApprovalParser(){}private static final Pattern P=Pattern.compile("^\\s*YES\\s*-\\s*(?<job>[A-Z0-9_-]+)\\s*$",Pattern.CASE_INSENSITIVE);public static ApprovalCommand parse(String text){if(text==null)return null;Matcher m=P.matcher(text);if(!m.matches())return null;String id=m.group("job").toUpperCase();return new ApprovalCommand(id,"YES-"+id);}}

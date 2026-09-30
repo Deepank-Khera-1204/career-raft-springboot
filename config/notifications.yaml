@@ -1,0 +1,12 @@
+# V0.7 email delivery.
+# Secrets belong in environment variables, never in this file.
+
+provider: smtp
+recipient_env: CR_EMAIL_TO
+from_env: CR_EMAIL_FROM
+smtp:
+  host_env: CR_SMTP_HOST
+  port_env: CR_SMTP_PORT
+  username_env: CR_SMTP_USERNAME
+  password_env: CR_SMTP_PASSWORD
+  use_tls_env: CR_SMTP_USE_TLS

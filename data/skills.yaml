@@ -1,0 +1,65 @@
+version: 1
+updated_at: 2026-09-20
+skills:
+  - {name: Java, category: language, evidence: direct, source_ids: [SRC-USER]}
+  - {name: SQL, category: language, evidence: direct, source_ids: [SRC-USER]}
+  - {name: C++, category: language, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Python, category: language, evidence: direct, source_ids: [SRC-USER]}
+  - {name: JavaScript, category: language, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Spring Boot, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Microservices, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: REST APIs, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: RestClient, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: WebClient, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Feign Client, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: gRPC, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: API authorization, category: security, evidence: direct, source_ids: [SRC-USER]}
+  - {name: API validation, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: approval workflows, category: backend, evidence: direct, source_ids: [SRC-USER]}
+  - {name: PostgreSQL, category: database, evidence: direct, source_ids: [SRC-USER]}
+  - {name: AWS Aurora, category: database, evidence: direct, source_ids: [SRC-USER]}
+  - {name: MySQL, category: database, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Redis, category: caching, evidence: direct, source_ids: [SRC-USER]}
+  - {name: AWS ElastiCache, category: caching, evidence: direct, source_ids: [SRC-USER]}
+  - {name: H2, category: database, evidence: direct, source_ids: [SRC-USER]}
+  - {name: MongoDB, category: database, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Kubernetes, category: infrastructure, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Docker, category: infrastructure, evidence: direct, source_ids: [SRC-USER]}
+  - {name: ArgoCD, category: delivery, evidence: direct, source_ids: [SRC-USER]}
+  - {name: AWS ECR, category: cloud, evidence: direct, source_ids: [SRC-USER]}
+  - {name: AWS, category: cloud, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Apigee, category: api_platform, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Kafka, category: messaging, evidence: direct, source_ids: [SRC-USER]}
+  - {name: AWS SQS, category: messaging, evidence: direct, source_ids: [SRC-USER]}
+  - {name: AWS SNS, category: messaging, evidence: direct, source_ids: [SRC-USER]}
+  - {name: JUnit, category: testing, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Mockito, category: testing, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Cucumber, category: testing, evidence: direct, source_ids: [SRC-USER]}
+  - {name: k6, category: testing, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Grafana, category: observability, evidence: direct, source_ids: [SRC-USER]}
+  - {name: CI/CD, category: delivery, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Terraform, category: infrastructure, evidence: direct, source_ids: [SRC-USER]}
+  - {name: SonarQube, category: observability, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Concurrency, category: architecture, evidence: direct, source_ids: [SRC-USER]}
+  - {name: API Gateways, category: architecture, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Distributed Systems, category: architecture, evidence: supported_by_project, source_ids: [SRC-USER]}
+  - {name: System Design, category: architecture, evidence: supported_by_project, source_ids: [SRC-USER]}
+  - {name: Rate Limiting, category: architecture, evidence: direct, source_ids: [SRC-USER]}
+  - {name: Raft Consensus, category: architecture, evidence: direct, source_ids: [SRC-USER]}
+inference_policy:
+  claimable_as_direct_skill: false
+  note: Related technologies may be used for semantic matching but require direct evidence before appearing as direct experience.
+
+resume_groups:
+  - label: Languages
+    skills: [Java, C++, Python, SQL, JavaScript]
+  - label: Backend
+    skills: [Spring Boot, REST APIs, Microservices, RestClient, WebClient, Feign Client, gRPC]
+  - label: Distributed Systems
+    skills: [System Design, Raft Consensus, Concurrency, Rate Limiting, API Gateways]
+  - label: Databases
+    skills: [PostgreSQL, AWS Aurora, MySQL, Redis, MongoDB]
+  - label: Cloud & Infrastructure
+    skills: [AWS, Kubernetes, Docker, ArgoCD, CI/CD, Apigee, Terraform]
+  - label: Testing & Observability
+    skills: [JUnit, Mockito, Cucumber, k6, Grafana, SonarQube]

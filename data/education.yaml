@@ -1,0 +1,11 @@
+version: 1
+education:
+  - id: EDU-PEC
+    source_ids: [SRC-USER, SRC-RESUME]
+    institution: Punjab Engineering College
+    degree: B.Tech. in Computer Science and Engineering
+    start: 2021-12
+    end: 2025-05
+    location: Chandigarh, India
+    cgpa: 8.65
+    evidence_status: confirmed

@@ -1,0 +1,6 @@
+{
+  "master": "resume.tex",
+  "status": "integrated",
+  "mutation_policy": "content_only",
+  "source_of_truth": "user_supplied_resume"
+}

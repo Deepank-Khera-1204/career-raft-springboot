@@ -1,0 +1,38 @@
+# Companies Career Raft should prioritize when source adapters are configured.
+# These are target-company preferences, not an evaluative ranking.
+
+target_companies:
+  - Atlassian
+  - Uber
+  - Stripe
+  - Walmart Global Tech
+  - Adobe
+  - Salesforce
+  - ServiceNow
+  - Microsoft
+  - Google
+  - Amazon
+  - JPMorgan Chase
+  - Goldman Sachs
+  - Morgan Stanley
+  - American Express
+  - Visa
+  - Mastercard
+  - PayPal
+  - Razorpay
+  - PhonePe
+  - Coinbase
+  - Rubrik
+  - Postman
+  - Zeta Global
+  - Meesho
+  - NVIDIA
+  - State Street
+  - LSEG
+  - Barclays
+  - Fiserv
+  - Deutsche Bank
+  - Wells Fargo
+  - Intuit
+  - D. E. Shaw
+  - NAB

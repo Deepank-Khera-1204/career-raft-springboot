@@ -1,0 +1,111 @@
+version: 1
+updated_at: 2026-09-20
+resume_project_count: 3
+projects:
+  - id: PROJ-RAFT
+    resume_bullet_max: 5
+    source_ids: [SRC-USER, SRC-RESUME, SRC-GITLAB]
+    name: Distributed Consensus Cluster — Raft From Scratch
+    url: https://gitlab.com/Deepank-Khera-1204/career-raft
+    source: gitlab
+    technologies: [Java 21, Spring Boot, gRPC, Docker, Kubernetes, Raft]
+    evidence_status: confirmed
+    claims:
+      - id: PROJ-RAFT-001
+        text: Engineered a 5-node fault-tolerant Raft cluster in Java 21 implementing leader election, term management, majority-quorum log replication, and deterministic state-machine application.
+        keywords: [Raft, leader election, fault tolerance, log replication, consensus, distributed systems, Java, Spring Boot, Kubernetes, Docker]
+        evidence_status: confirmed
+      - id: PROJ-RAFT-002
+        text: Designed the cluster to tolerate 2 simultaneous node failures via 3/5 majority-quorum commits, with automated leader failover and log catch-up for recovered nodes.
+        keywords: [fault tolerance, node failures, majority quorum, leader failover, log catch-up, distributed systems]
+        evidence_status: confirmed
+      - id: PROJ-RAFT-003
+        text: Built the consensus core with deterministic time and in-memory transport for repeatable failure simulations before layering in gRPC-based network communication.
+        keywords: [consensus, deterministic testing, failure simulation, gRPC, distributed systems]
+        evidence_status: confirmed
+  - id: PROJ-RATE
+    resume_bullet_max: 5
+    source_ids: [SRC-USER, SRC-RESUME, SRC-GITLAB]
+    name: Distributed Rate Limiter
+    url: https://gitlab.com/Deepank-Khera-1204/rate-limiter
+    source: gitlab
+    technologies: [Java 21, Spring Boot, Redis, Lua, Kubernetes, Docker, GitLab CI/CD]
+    evidence_status: confirmed
+    claims:
+      - id: PROJ-RATE-001
+        text: Built a distributed multi-tenant Token Bucket rate limiter using Redis atomic Lua scripts, enforcing limits consistently across Kubernetes replicas autoscaled from 3 to 10 pods at 70% CPU.
+        keywords: [distributed systems, rate limiting, token bucket, Redis, Lua, Kubernetes, autoscaling]
+        evidence_status: confirmed
+      - id: PROJ-RATE-002
+        text: Achieved approximately 89% instruction and 92% branch test coverage via unit, integration, load, and stress tests, automated through a 5-stage GitLab CI/CD pipeline with Docker image publishing.
+        keywords: [unit testing, integration testing, load testing, stress testing, test coverage, CI/CD, Docker]
+        evidence_status: confirmed
+  - id: PROJ-PAY
+    resume_bullet_max: 5
+    source_ids: [SRC-USER, SRC-RESUME, SRC-GITHUB]
+    name: PayPilot
+    url: https://github.com/jahnavimurali/PayPilot
+    source: github
+    technologies: [Spring Boot, AWS RDS, MySQL, H2, REST APIs, React]
+    evidence_status: confirmed
+    claims:
+      - id: PROJ-PAY-001
+        text: Developed Spring Boot microservices and REST APIs for automated bill payments, reminders, and recurring scheduling using AWS RDS/MySQL.
+        keywords: [payments, bill payments, Spring Boot, microservices, REST APIs, AWS RDS, MySQL]
+        evidence_status: confirmed
+      - id: PROJ-PAY-002
+        text: Built a React analytics dashboard visualizing category-wise spending and iterated on the service post-bootcamp during the SDE role.
+        keywords: [React, analytics dashboard, spending analytics]
+        evidence_status: confirmed
+  - id: PROJ-BLOCKCHAIN
+    source_ids: [SRC-USER, SRC-RESUME, SRC-GITHUB]
+    name: My Blockchain
+    url: https://github.com/Deepank-Khera-1204/my-blockchain
+    source: github
+    technologies: []
+    evidence_status: repository_confirmed_claims_pending
+    claims:
+      - id: PROJ-BLOCKCHAIN-001
+        text: Built a Node.js/Express blockchain implementation with block mining, chain validation and chain replacement, plus Redis-backed publish/subscribe for blockchain synchronization.
+        keywords: [Node.js, Express, blockchain, mining, hashing, chain validation, Redis, publish-subscribe]
+        evidence_status: repository_observed
+        source_ids: [SRC-GITHUB]
+  - id: PROJ-WEATHER
+    source_ids: [SRC-USER, SRC-GITHUB]
+    name: My Weather
+    url: https://github.com/Deepank-Khera-1204/my-weather
+    source: github
+    technologies: []
+    evidence_status: repository_confirmed_claims_pending
+    claims:
+      - id: PROJ-WEATHER-001
+        text: Built a browser-based weather application using JavaScript that uses IP geolocation and the OpenWeatherMap API to retrieve and display weather conditions.
+        keywords: [JavaScript, weather API, OpenWeatherMap, IP geolocation, REST API]
+        evidence_status: repository_observed
+        source_ids: [SRC-GITHUB]
+  - id: PROJ-STOCK
+    source_ids: [SRC-USER, SRC-GITHUB]
+    name: Stock Info App
+    url: https://github.com/Deepank-Khera-1204/stock-info-app
+    source: github
+    technologies: []
+    evidence_status: repository_confirmed_claims_pending
+    claims:
+      - id: PROJ-STOCK-001
+        text: Built a Python stock-information application using Requests and Matplotlib that retrieves daily market data and news through the Alpha Vantage API.
+        keywords: [Python, Requests, Matplotlib, Alpha Vantage, stock data, financial news, API]
+        evidence_status: repository_observed
+        source_ids: [SRC-GITHUB]
+  - id: PROJ-INSTAINTEL
+    source_ids: [SRC-USER, SRC-RESUME, SRC-GITHUB]
+    name: InstaIntel / Data Analysis
+    url: https://github.com/Deepank-Khera-1204/Data-Analysis-Deepu
+    source: github
+    technologies: [Python, NumPy, Pandas, Matplotlib, Scikit-learn]
+    evidence_status: confirmed_from_resume
+    claims:
+      - id: PROJ-INSTAINTEL-001
+        text: Repository contains an Instagram Reach Analysis dataset and analysis notebook.
+        keywords: [Instagram, data analysis, notebook, dataset]
+        evidence_status: repository_observed
+        source_ids: [SRC-GITHUB]

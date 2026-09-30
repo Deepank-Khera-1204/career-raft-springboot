@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: career-raft
+  datasource:
+    url: jdbc:sqlite:data/career_raft.sqlite
+    driver-class-name: org.sqlite.JDBC
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+career-raft:
+  data-root: data
+  scoring:
+    version: 0.6-java
+    deep-analysis-threshold: 70
+    package-generation-threshold: 80

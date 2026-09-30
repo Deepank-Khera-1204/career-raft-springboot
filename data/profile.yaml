@@ -1,0 +1,109 @@
+version: 1
+updated_at: 2026-09-20
+
+identity:
+  name: Deepank Khera
+  location: India
+  work_authorization: India
+  email: deepankkhera.dk201314@gmail.com
+  phone: +91 7988504810
+  linkedin: https://www.linkedin.com/in/deepank-khera-7723171b4/
+  github: https://github.com/Deepank-Khera-1204
+  gitlab: https://gitlab.com/Deepank-Khera-1204
+
+professional_profile:
+  current_title: Software Development Engineer
+  current_company: NatWest Group
+  current_location: Gurugram, Haryana
+  current_experience_years: 1.25
+  experience_basis: user_stated
+  profile_summary: Backend-heavy software engineer working primarily with Java and Spring Boot microservices, open to full-stack, DevOps and cloud/platform roles.
+
+job_preferences:
+  experience_ceiling_years: 2
+  acceptable_experience_band: "0-2"
+
+  preferred_role_families:
+    - Backend Engineer
+    - Backend Software Engineer
+    - Software Engineer
+    - Software Development Engineer
+    - Java Backend Engineer
+    - Spring Boot Engineer
+    - Platform Engineer
+    - Backend Platform Engineer
+    - Infrastructure Software Engineer
+    - Distributed Systems Engineer
+    - Payments Engineer
+    - Software Engineer - Backend
+    - Software Engineer, Payments
+    - Full Stack Engineer
+    - Full Stack Software Engineer
+    - DevOps Engineer
+    - Cloud Engineer
+
+  preferred_locations:
+    - Bangalore
+    - Chennai
+    - Gurgaon
+    - Gurugram
+    - Remote India
+    - Pan India
+
+  preferred_domains:
+    - Payments
+    - Banking
+    - FinTech
+    - Distributed Systems
+    - Backend Infrastructure
+    - Cloud Infrastructure
+    - Developer Platforms
+
+  preferences:
+    backend_heavy: true
+    open_to_full_stack: true
+    frontend_only: false
+    open_to_devops: true
+    open_to_high_compensation_technical_roles: true
+
+  salary:
+    currency: INR
+    minimum_lpa: 15
+
+  hard_exclusions:
+    - Mobile-only
+    - Manual QA
+    - Sales
+    - Internship
+    - Unpaid
+
+  hard_seniority_exclusions:
+    - manager
+    - director
+    - head of
+    - vice president
+    - vp
+    - principal
+    - senior
+    - staff
+    - lead
+
+application_policy:
+  resume_pages: 1
+  application_submission: manual_only
+
+  resume_layout:
+    experience_bullet_min: 5
+    experience_bullet_max: 7
+    project_count: 3
+    project_bullet_min: 3
+    project_bullet_max: 5
+
+  cover_letter_style:
+    - professional
+    - concise
+    - human
+    - conversational
+
+  evidence_policy: "Resume claims must be traceable to confirmed evidence."
+  inference_policy: "Related skills may be inferred for matching, but inferred skills must never be represented as direct experience without confirming evidence."

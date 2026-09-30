@@ -1,0 +1,83 @@
+version: 1
+updated_at: 2026-09-20
+roles:
+  - id: EXP-NW
+    source_ids: [SRC-USER]
+    company: NatWest Group
+    title: Software Development Engineer
+    start: 2025-07
+    end: present
+    location: Gurugram, Haryana
+    domain: [Payments, Banking]
+    responsibilities:
+      - id: EXP-NW-001
+        text: Developed and enhanced Java/Spring Boot microservices in the Payments domain, including Standing Orders and Account services; tuned thread allocation and timeouts under Apigee egress-proxy backpressure; reduced heavy-account DB write time from 10s to 6s (40%) and frontend data-load time from 95s to 40s (58%).
+        evidence_status: confirmed
+      - id: EXP-NW-002
+        text: Owns the full Create journey for Standing Orders and is designing the API layout.
+        evidence_status: confirmed
+      - id: EXP-NW-003
+        text: Currently building a Create API with validation, approvals and authorization controls.
+        evidence_status: confirmed
+      - id: EXP-NW-004
+        text: Participated in a snapshot-based caching strategy implemented with database tables rather than a key-value store.
+        evidence_status: confirmed
+      - id: EXP-NW-005
+        text: Worked with Redis, AWS ElastiCache and AWS Aurora, including cache/data migration work.
+        evidence_status: confirmed
+      - id: EXP-NW-006
+        text: Worked with AWS ECR, Kubernetes, Docker, ArgoCD and multi-region deployments; integrated Grafana dashboards for service monitoring and troubleshooting in cloud-native delivery.
+        evidence_status: confirmed
+      - id: EXP-NW-007
+        text: Worked with Kafka and AWS SQS/SNS messaging.
+        evidence_status: confirmed
+      - id: EXP-NW-008
+        text: Participated in five successful release features with zero code-breaking changes in authored work.
+        evidence_status: confirmed
+      - id: EXP-NW-009
+        text: Performed k6 load testing at twice current account volume for one hour and used HPA scaling from 3 to 10 pods.
+        keywords: [k6, load testing, performance, HPA, autoscaling, account volume, scaling]
+        evidence_status: confirmed
+      - id: EXP-NW-010
+        text: Reduced database write time from 10 seconds to 6 seconds and frontend data-load time from 95 seconds to 40 seconds.
+        evidence_status: confirmed
+      - id: EXP-NW-011
+        text: Built REST service-to-service communication using RestClient, WebClient and Feign Client and contributed to PostgreSQL schema work.
+        evidence_status: confirmed
+      - id: EXP-NW-012
+        text: Implemented unit and acceptance testing with JUnit, Mockito and Cucumber; contributed to the architecture and migration of Redis-backed data to AWS Aurora.
+        evidence_status: confirmed
+      - id: EXP-NW-013
+        text: Worked with multi-region deployments and Grafana monitoring.
+        evidence_status: confirmed
+      - id: EXP-NW-014
+        text: Contributed to account creation flows involving validation, fraud detection and fuzzy matching.
+        evidence_status: confirmed
+  - id: EXP-BIONE
+    source_ids: [SRC-USER, SRC-RESUME]
+    company: Bione Healthcare
+    title: Web Developer Intern
+    start: 2024-06
+    end: 2024-07
+    responsibilities:
+      - id: EXP-BIONE-001
+        text: Developed a hybrid Blockchain and MySQL database for an e-commerce application.
+        evidence_status: confirmed
+      - id: EXP-BIONE-002
+        text: Optimized backend processes and reduced page load time by 15%.
+        evidence_status: confirmed
+  - id: EXP-AJNA
+    company: Ajna Capital
+    title: Research & Marketing Intern
+    start: 2024-02
+    end: 2024-05
+    responsibilities:
+      - id: EXP-AJNA-001
+        text: Conducted market research and supported investment opportunity analysis.
+        evidence_status: confirmed
+      - id: EXP-AJNA-002
+        text: Managed an Asana content calendar and social posting workflow.
+        evidence_status: confirmed
+      - id: EXP-AJNA-003
+        text: Guided a team of interns in research and project-management tasks.
+        evidence_status: confirmed

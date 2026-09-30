@@ -1,0 +1,30 @@
+version: 1
+updated_at: 2026-09-20
+
+certifications:
+  - id: CERT-AIML
+    source_ids: [SRC-USER, SRC-RESUME]
+    name: Specialisation in Artificial Intelligence and Machine Learning
+    issuer: Punjab Engineering College
+    details: Awarded major specialization in AI/ML as part of the undergraduate curriculum at Punjab Engineering College
+    evidence_status: confirmed
+
+  - id: CERT-JAVA-HCL
+    name: Java Developer Training
+    issuer: HCL Technologies
+    details: Core Java, JDBC and Oracle SQL integration
+    evidence_status: confirmed
+
+  - id: CERT-AMAZON-ML
+    name: Amazon ML Summer School 2024
+    issuer: Amazon
+    details: Selected to participate in advanced ML training
+    evidence_status: confirmed
+
+  - id: CERT-COURSERA-WEB
+    name: Web Development Bootcamp
+    issuer: Coursera
+    details: HTML, CSS, JavaScript, Node.js, Express, React and MySQL
+    evidence_status: confirmed
+
+resume_certification_ids: [CERT-AIML, CERT-JAVA-HCL]

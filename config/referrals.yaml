@@ -1,0 +1,10 @@
+# V0.6 referral intelligence. Public web search only.
+provider: brave
+api_key_env: BRAVE_SEARCH_API_KEY
+country: IN
+search_lang: en
+results_per_query: 20
+target_count: 10
+requests_per_job: 3
+daily_request_limit: 30
+min_confidence: 0.35
