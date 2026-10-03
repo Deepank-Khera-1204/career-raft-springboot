@@ -121,9 +121,15 @@ public class UrlTestService {
             if (recipient == null || recipient.isBlank()) {
                 throw new IllegalArgumentException("CR_EMAIL_TO is required when email delivery is enabled");
             }
-            var applicationPackage = packageBuilder.build(job, assessment);
-            emailDeliveryService.sendPackage(job, assessment, referrals, applicationPackage, recipient);
-            emailSent = true;
+            try {
+                var applicationPackage = packageBuilder.build(job, assessment);
+                emailDeliveryService.sendPackage(
+                        job, assessment, referrals, applicationPackage, recipient);
+                emailSent = true;
+            } catch (Exception e) {
+                throw new IllegalStateException(
+                        "Failed to generate or send the application package for URL: " + url, e);
+            }
         }
 
         return new Result(
