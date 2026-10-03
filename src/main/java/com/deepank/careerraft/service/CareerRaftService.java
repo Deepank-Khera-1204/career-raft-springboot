@@ -25,7 +25,6 @@ public class CareerRaftService {
     private final ApplicationPackageBuilder packageBuilder;
     private final ReferralService referralService;
     private final EmailDeliveryService emailDeliveryService;
-    private final AtomicInteger semanticCalls = new AtomicInteger();
 
     public CareerRaftService(
             DiscoveryService discovery,
@@ -54,11 +53,23 @@ public class CareerRaftService {
 
     public AssessmentResult assess(Job job) {
         boolean inserted = jobs.insertJob(job);
-        return assessInsertedJob(job, inserted);
+        return assessInsertedJob(job, inserted, new AtomicInteger());
     }
 
     public AssessmentResult assessInsertedJob(Job job, boolean inserted) {
-        JobAssessment assessment = assessJob(job);
+        return assessInsertedJob(job, inserted, new AtomicInteger());
+    }
+
+    /**
+     * Assess using a semantic-call budget owned by the current runner invocation.
+     * CareerRaftService is a singleton, so run-local mutable state must never live
+     * on the service itself.
+     */
+    public AssessmentResult assessInsertedJob(
+            Job job,
+            boolean inserted,
+            AtomicInteger semanticCalls) {
+        JobAssessment assessment = assessJob(job, semanticCalls);
         jobs.setScore(job.id(), assessment.combinedScore(),
                 assessment.hardPass() ? "SCORED" : "REJECTED");
 
@@ -69,22 +80,47 @@ public class CareerRaftService {
         if (assessment.hardPass()
                 && (assessment.nextAction() == JobAssessment.NextAction.GENERATE_PACKAGE
                 || assessment.nextAction() == JobAssessment.NextAction.GENERATE_PACKAGE_PRIORITY)) {
-            try {
-                applicationPackage = packageBuilder.build(job, assessment);
-                jobs.setScore(job.id(), assessment.combinedScore(), "PACKAGE_READY");
-                if (Boolean.parseBoolean(System.getenv().getOrDefault("CR_ENABLE_LINKEDIN", "true"))) { try { referrals = referralService.research(job.company(), job.title(), 10); } catch (Exception ignored) { } }
-                String recipient = System.getenv("CR_EMAIL_TO");
-                boolean sendEmail = Boolean.parseBoolean(System.getenv().getOrDefault("CR_SEND_EMAIL", "true"));
-                if (sendEmail && recipient != null && !recipient.isBlank() && !jobs.notificationSent(job.id(), "smtp", recipient)) {
-                    emailDeliveryService.sendPackage(job, assessment, referrals, applicationPackage, recipient);
-                    jobs.markNotificationSent(job.id(), "smtp", recipient,
-                            "Aizen-sama — " + job.company() + " · " + job.title(), java.time.Instant.now());
-                    emailSent = true;
-                } else if (sendEmail && recipient != null && !recipient.isBlank()) {
-                    duplicateEmail = true;
+            /*
+             * Package generation is part of the core application-preparation path.
+             * A failure must propagate to the runner so the job is recorded as
+             * FAILED instead of silently looking successful.
+             */
+            applicationPackage = packageBuilder.build(job, assessment);
+            jobs.setScore(job.id(), assessment.combinedScore(), "PACKAGE_READY");
+
+            /*
+             * Referral enrichment is optional. A provider/API failure must not
+             * invalidate an otherwise valid assessment/package.
+             */
+            if (Boolean.parseBoolean(System.getenv().getOrDefault("CR_ENABLE_LINKEDIN", "true"))) {
+                try {
+                    referrals = referralService.research(job.company(), job.title(), 10);
+                } catch (Exception ignored) {
+                    referrals = List.of();
                 }
-            } catch (Exception ignored) {
-                // Assessment remains valid when downstream packaging/notification tooling is unavailable.
+            }
+
+            /*
+             * Email is an explicit application side effect. Let failures propagate
+             * so DueSourceRunner records this job as FAILED while continuing with
+             * every other job/source.
+             */
+            String recipient = System.getenv("CR_EMAIL_TO");
+            boolean sendEmail = Boolean.parseBoolean(
+                    System.getenv().getOrDefault("CR_SEND_EMAIL", "true"));
+            if (sendEmail && recipient != null && !recipient.isBlank()
+                    && !jobs.notificationSent(job.id(), "smtp", recipient)) {
+                emailDeliveryService.sendPackage(
+                        job, assessment, referrals, applicationPackage, recipient);
+                jobs.markNotificationSent(
+                        job.id(),
+                        "smtp",
+                        recipient,
+                        "Aizen-sama — " + job.company() + " · " + job.title(),
+                        java.time.Instant.now());
+                emailSent = true;
+            } else if (sendEmail && recipient != null && !recipient.isBlank()) {
+                duplicateEmail = true;
             }
         }
 
@@ -92,12 +128,13 @@ public class CareerRaftService {
     }
 
     public BatchAssessmentResult discoverAndAssess() {
-        semanticCalls.set(0);
+        AtomicInteger semanticCalls = new AtomicInteger();
         DiscoveryResult discovered = discovery.discover();
         List<AssessmentResult> results = new ArrayList<>();
         for (Job job : discovered.jobs()) {
             try {
-                results.add(assess(job));
+                boolean inserted = jobs.insertJob(job);
+                results.add(assessInsertedJob(job, inserted, semanticCalls));
             } catch (Exception e) {
                 results.add(new AssessmentResult(job, null, false, null, List.of(), false, false));
             }
@@ -105,7 +142,7 @@ public class CareerRaftService {
         return new BatchAssessmentResult(discovered, results);
     }
 
-    private JobAssessment assessJob(Job job) {
+    private JobAssessment assessJob(Job job, AtomicInteger semanticCalls) {
         JobAssessment assessment = scorer.assess(job, profiles.build());
 
         if (!aiSettings.enabled
