@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -110,6 +111,12 @@ public class UrlTestService {
 
         boolean emailSent = false;
         if (sendEmail) {
+            if (!assessment.hardPass()
+                    || (assessment.nextAction() != JobAssessment.NextAction.GENERATE_PACKAGE
+                    && assessment.nextAction() != JobAssessment.NextAction.GENERATE_PACKAGE_PRIORITY)) {
+                throw new IllegalArgumentException(
+                        "Email requested, but this URL did not qualify for application-package generation");
+            }
             String recipient = System.getenv("CR_EMAIL_TO");
             if (recipient == null || recipient.isBlank()) {
                 throw new IllegalArgumentException("CR_EMAIL_TO is required when email delivery is enabled");
