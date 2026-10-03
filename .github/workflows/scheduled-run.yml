@@ -1,0 +1,78 @@
+name: Career Raft Scheduled Runner
+
+on:
+  schedule:
+    # Wake twice per hour. The application/database decides which sources
+    # are actually due, so this does not fetch every source every wake-up.
+    - cron: "17,47 * * * *"
+      timezone: "Asia/Kolkata"
+  workflow_dispatch:
+    inputs:
+      send_email:
+        description: "Send application emails for qualifying jobs"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  packages: read
+
+concurrency:
+  group: career-raft-springboot-runner
+  cancel-in-progress: false
+
+env:
+  IMAGE_NAME: ghcr.io/deepank-khera-1204/career-raft-java:main
+
+jobs:
+  run-due:
+    name: Run due sources
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull runtime image
+        run: docker pull "${IMAGE_NAME}"
+
+      - name: Run Career Raft
+        env:
+          CAREER_RAFT_RUN_ON_START: "true"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BRAVE_SEARCH_API_KEY: ${{ secrets.BRAVE_SEARCH_API_KEY }}
+          CR_EMAIL_TO: ${{ secrets.CR_EMAIL_TO }}
+          CR_EMAIL_FROM: ${{ secrets.CR_EMAIL_FROM }}
+          CR_SMTP_HOST: ${{ secrets.CR_SMTP_HOST }}
+          CR_SMTP_PORT: ${{ secrets.CR_SMTP_PORT }}
+          CR_SMTP_USERNAME: ${{ secrets.CR_SMTP_USERNAME }}
+          CR_SMTP_PASSWORD: ${{ secrets.CR_SMTP_PASSWORD }}
+          CR_SMTP_USE_TLS: ${{ secrets.CR_SMTP_USE_TLS }}
+          CR_SEND_EMAIL: ${{ github.event_name == 'schedule' && 'true' || inputs.send_email }}
+          CR_ENABLE_LINKEDIN: "true"
+        run: |
+          docker run --rm --init             --user "$(id -u):$(id -g)"             -v "${GITHUB_WORKSPACE}/data:/app/data"             -e CAREER_RAFT_RUN_ON_START             -e GEMINI_API_KEY             -e BRAVE_SEARCH_API_KEY             -e CR_EMAIL_TO             -e CR_EMAIL_FROM             -e CR_SMTP_HOST             -e CR_SMTP_PORT             -e CR_SMTP_USERNAME             -e CR_SMTP_PASSWORD             -e CR_SMTP_USE_TLS             -e CR_SEND_EMAIL             -e CR_ENABLE_LINKEDIN             "${IMAGE_NAME}"
+
+      - name: Persist scheduler state
+        if: ${{ always() }}
+        run: |
+          git config user.name "career-raft[bot]"
+          git config user.email "career-raft[bot]@users.noreply.github.com"
+          git add -f data/career_raft.sqlite
+          if git diff --cached --quiet; then
+            echo "No state changes to persist."
+            exit 0
+          fi
+          git commit -m "chore: persist Career Raft state [skip ci]"
+          git push
