@@ -24,7 +24,13 @@ public class OneShotRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         String testUrl = System.getenv("CAREER_RAFT_TEST_URL");
         if (testUrl != null && !testUrl.isBlank()) {
-            runUrlTest(testUrl.trim());
+            boolean useGemini = Boolean.parseBoolean(
+                    System.getenv().getOrDefault("CAREER_RAFT_TEST_GEMINI", "false"));
+            boolean searchLinkedIn = Boolean.parseBoolean(
+                    System.getenv().getOrDefault("CAREER_RAFT_TEST_LINKEDIN", "false"));
+            boolean sendEmail = Boolean.parseBoolean(
+                    System.getenv().getOrDefault("CAREER_RAFT_TEST_EMAIL", "false"));
+            runUrlTest(testUrl.trim(), useGemini, searchLinkedIn, sendEmail);
             return;
         }
 
@@ -53,9 +59,14 @@ public class OneShotRunner implements ApplicationRunner {
         }
     }
 
-    private void runUrlTest(String url) {
+    private void runUrlTest(
+            String url,
+            boolean useGemini,
+            boolean searchLinkedIn,
+            boolean sendEmail) {
         try {
-            UrlTestService.Result result = urlTestService.test(url);
+            UrlTestService.Result result =
+                    urlTestService.test(url, useGemini, searchLinkedIn, sendEmail);
             System.out.println("CAREER RAFT URL TEST");
             System.out.println("url=" + result.url());
             System.out.println("title=" + result.job().title());
@@ -63,6 +74,14 @@ public class OneShotRunner implements ApplicationRunner {
             System.out.println("score=" + result.score());
             System.out.println("hard_pass=" + result.hardPass());
             System.out.println("next_action=" + result.nextAction());
+            System.out.println("gemini=" + useGemini);
+            System.out.println("linkedin_referral_search=" + searchLinkedIn);
+            System.out.println("email_requested=" + sendEmail);
+            System.out.println("semantic_status=" + result.semanticStatus());
+            System.out.println("semantic_provider=" + result.semanticProvider());
+            System.out.println("semantic_alignment=" + result.semanticAlignment());
+            System.out.println("referral_count=" + result.referralCount());
+            System.out.println("email_sent=" + result.emailSent());
             if (!result.hardFailReasons().isEmpty()) {
                 System.out.println("hard_fail_reasons=" + String.join(" | ", result.hardFailReasons()));
             }
