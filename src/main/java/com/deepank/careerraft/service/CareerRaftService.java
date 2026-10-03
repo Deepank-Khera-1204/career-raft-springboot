@@ -85,8 +85,14 @@ public class CareerRaftService {
              * A failure must propagate to the runner so the job is recorded as
              * FAILED instead of silently looking successful.
              */
-            applicationPackage = packageBuilder.build(job, assessment);
-            jobs.setScore(job.id(), assessment.combinedScore(), "PACKAGE_READY");
+            try {
+                applicationPackage = packageBuilder.build(job, assessment);
+                jobs.setScore(job.id(), assessment.combinedScore(), "PACKAGE_READY");
+            } catch (Exception e) {
+                jobs.setScore(job.id(), assessment.combinedScore(), "FAILED");
+                throw new IllegalStateException(
+                        "Failed to generate application package for job " + job.id(), e);
+            }
 
             /*
              * Referral enrichment is optional. A provider/API failure must not
@@ -110,15 +116,21 @@ public class CareerRaftService {
                     System.getenv().getOrDefault("CR_SEND_EMAIL", "true"));
             if (sendEmail && recipient != null && !recipient.isBlank()
                     && !jobs.notificationSent(job.id(), "smtp", recipient)) {
-                emailDeliveryService.sendPackage(
-                        job, assessment, referrals, applicationPackage, recipient);
-                jobs.markNotificationSent(
-                        job.id(),
-                        "smtp",
-                        recipient,
-                        "Aizen-sama — " + job.company() + " · " + job.title(),
-                        java.time.Instant.now());
-                emailSent = true;
+                try {
+                    emailDeliveryService.sendPackage(
+                            job, assessment, referrals, applicationPackage, recipient);
+                    jobs.markNotificationSent(
+                            job.id(),
+                            "smtp",
+                            recipient,
+                            "Aizen-sama — " + job.company() + " · " + job.title(),
+                            java.time.Instant.now());
+                    emailSent = true;
+                } catch (Exception e) {
+                    jobs.setScore(job.id(), assessment.combinedScore(), "FAILED");
+                    throw new IllegalStateException(
+                            "Failed to deliver application email for job " + job.id(), e);
+                }
             } else if (sendEmail && recipient != null && !recipient.isBlank()) {
                 duplicateEmail = true;
             }
