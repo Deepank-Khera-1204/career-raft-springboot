@@ -8,26 +8,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class OneShotRunner implements ApplicationRunner {
     private final DueSourceRunner runner;
-    private final UrlTestService urlTestService;
     private final ConfigurableApplicationContext context;
 
-    public OneShotRunner(
-            DueSourceRunner runner,
-            UrlTestService urlTestService,
-            ConfigurableApplicationContext context) {
+    public OneShotRunner(DueSourceRunner runner, ConfigurableApplicationContext context) {
         this.runner = runner;
-        this.urlTestService = urlTestService;
         this.context = context;
     }
 
     @Override
     public void run(ApplicationArguments args) {
-        String testUrl = System.getenv("CAREER_RAFT_TEST_URL");
-        if (testUrl != null && !testUrl.isBlank()) {
-            runUrlTest(testUrl.trim());
-            return;
-        }
-
         boolean enabled = Boolean.parseBoolean(
                 System.getenv().getOrDefault("CAREER_RAFT_RUN_ON_START", "false"));
         if (!enabled) {
@@ -50,35 +39,6 @@ public class OneShotRunner implements ApplicationRunner {
         } finally {
             context.close();
             System.exit(exitCode);
-        }
-    }
-
-    private void runUrlTest(String url) {
-        try {
-            UrlTestService.Result result = urlTestService.test(url);
-            System.out.println("CAREER RAFT URL TEST");
-            System.out.println("url=" + result.url());
-            System.out.println("title=" + result.job().title());
-            System.out.println("company=" + result.job().company());
-            System.out.println("score=" + result.score());
-            System.out.println("hard_pass=" + result.hardPass());
-            System.out.println("next_action=" + result.nextAction());
-            if (!result.hardFailReasons().isEmpty()) {
-                System.out.println("hard_fail_reasons=" + String.join(" | ", result.hardFailReasons()));
-            }
-            if (!result.matchedSkills().isEmpty()) {
-                System.out.println("matched_skills=" + String.join(", ", result.matchedSkills()));
-            }
-            if (!result.missingSkills().isEmpty()) {
-                System.out.println("missing_skills=" + String.join(", ", result.missingSkills()));
-            }
-            System.out.println("rationale=" + result.rationale());
-            // A successful test is a successful fetch/parse/assessment, regardless
-            // of whether the job itself passes the candidate's hard filter.
-            System.exit(0);
-        } catch (Exception e) {
-            System.err.println("CAREER RAFT URL TEST FAILED: " + e.getMessage());
-            System.exit(1);
         }
     }
 }
