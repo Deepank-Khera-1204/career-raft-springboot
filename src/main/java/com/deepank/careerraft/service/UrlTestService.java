@@ -102,9 +102,9 @@ public class UrlTestService {
 
         List<ReferralModels.ReferralTarget> referrals = List.of();
         if (searchLinkedIn) {
-            String apiKey = System.getenv("BRAVE_SEARCH_API_KEY");
+            String apiKey = System.getenv("TAVILY_API_KEY");
             if (apiKey == null || apiKey.isBlank()) {
-                throw new IllegalArgumentException("BRAVE_SEARCH_API_KEY is required when LinkedIn referral search is enabled");
+                throw new IllegalArgumentException("TAVILY_API_KEY is required when LinkedIn referral search is enabled");
             }
             referrals = referralResearcher.findTargets(job.company(), job.title(), 10);
         }
