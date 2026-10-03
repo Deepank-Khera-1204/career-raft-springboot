@@ -5,8 +5,8 @@ import java.util.*;
 
 @Service
 public class PublicWebReferralResearcher{
- private final BraveSearchProvider search;
- public PublicWebReferralResearcher(BraveSearchProvider s){search=s;}
+ private final TavilySearchProvider search;
+ public PublicWebReferralResearcher(TavilySearchProvider s){search=s;}
  private static final List<List<String>> LANES=List.of(
   List.of("engineering manager","hiring manager","engineering lead","tech lead"),
   List.of("recruiter","talent acquisition","technical recruiter","talent partner"),
