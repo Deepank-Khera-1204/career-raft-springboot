@@ -73,7 +73,9 @@ public class OneShotRunner implements ApplicationRunner {
                 System.out.println("missing_skills=" + String.join(", ", result.missingSkills()));
             }
             System.out.println("rationale=" + result.rationale());
-            System.exit(result.hardPass() ? 0 : 1);
+            // A successful test is a successful fetch/parse/assessment, regardless
+            // of whether the job itself passes the candidate's hard filter.
+            System.exit(0);
         } catch (Exception e) {
             System.err.println("CAREER RAFT URL TEST FAILED: " + e.getMessage());
             System.exit(1);
