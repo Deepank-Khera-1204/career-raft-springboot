@@ -23,6 +23,7 @@ public class OneShotRunner implements ApplicationRunner {
             return;
         }
 
+        int exitCode = 1;
         try {
             DueSourceRunner.RunSummary result = runner.runDueSources();
             System.out.println("CAREER RAFT RUN: " + result.status()
@@ -30,9 +31,12 @@ public class OneShotRunner implements ApplicationRunner {
                     + " fetched=" + result.metrics().jobsFetched()
                     + " new=" + result.metrics().jobsNew()
                     + " packages=" + result.metrics().packagesGenerated()
-                    + " emails=" + result.metrics().emailsSent());
+                    + " emails=" + result.metrics().emailsSent()
+                    + " failed_jobs=" + result.metrics().jobsFailed());
+
+            exitCode = "success".equalsIgnoreCase(result.status())
+                    && result.metrics().jobsFailed() == 0 ? 0 : 1;
         } finally {
-            int exitCode = 0;
             context.close();
             System.exit(exitCode);
         }
