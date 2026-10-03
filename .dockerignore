@@ -1,0 +1,11 @@
+/.git
+/.github
+/.idea
+/.vscode
+/target/*
+/src
+pom.xml
+*.iml
+data/career_raft.sqlite
+data/applications
+data/semantic-analysis
