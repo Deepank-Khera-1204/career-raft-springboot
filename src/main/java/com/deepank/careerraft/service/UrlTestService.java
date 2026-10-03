@@ -135,7 +135,7 @@ public class UrlTestService {
                 assessment.hardFailReasons(),
                 assessment.matchedSkills(),
                 assessment.missingSkills(),
-                assessment.rationale(),
+                String.join(" | ", assessment.rationale()),
                 assessment.semanticStatus(),
                 assessment.semanticProvider(),
                 assessment.semanticAlignment(),
