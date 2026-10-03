@@ -6,6 +6,12 @@ import com.deepank.careerraft.domain.Job;
 import com.deepank.careerraft.domain.JobAssessment;
 import com.deepank.careerraft.scoring.CandidateProfileFactory;
 import com.deepank.careerraft.scoring.ScoringEngine;
+import com.deepank.careerraft.documents.ApplicationPackageBuilder;
+import com.deepank.careerraft.notifications.EmailDeliveryService;
+import com.deepank.careerraft.referrals.PublicWebReferralResearcher;
+import com.deepank.careerraft.referrals.ReferralModels;
+import com.deepank.careerraft.intelligence.SemanticJobAnalyzer;
+import com.deepank.careerraft.intelligence.SemanticScorer;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -18,19 +24,34 @@ public class UrlTestService {
     private final HtmlJobParser parser;
     private final ScoringEngine scorer;
     private final CandidateProfileFactory profiles;
+    private final SemanticJobAnalyzer semanticAnalyzer;
+    private final SemanticScorer semanticScorer;
+    private final PublicWebReferralResearcher referralResearcher;
+    private final ApplicationPackageBuilder packageBuilder;
+    private final EmailDeliveryService emailDeliveryService;
 
     public UrlTestService(
             SimpleHttpClient http,
             HtmlJobParser parser,
             ScoringEngine scorer,
-            CandidateProfileFactory profiles) {
+            CandidateProfileFactory profiles,
+            SemanticJobAnalyzer semanticAnalyzer,
+            SemanticScorer semanticScorer,
+            PublicWebReferralResearcher referralResearcher,
+            ApplicationPackageBuilder packageBuilder,
+            EmailDeliveryService emailDeliveryService) {
         this.http = http;
         this.parser = parser;
         this.scorer = scorer;
         this.profiles = profiles;
+        this.semanticAnalyzer = semanticAnalyzer;
+        this.semanticScorer = semanticScorer;
+        this.referralResearcher = referralResearcher;
+        this.packageBuilder = packageBuilder;
+        this.emailDeliveryService = emailDeliveryService;
     }
 
-    public Result test(String url) {
+    public Result test(String url, boolean useGemini, boolean searchLinkedIn, boolean sendEmail) {
         URI uri = URI.create(url);
         if (!"http".equalsIgnoreCase(uri.getScheme())
                 && !"https".equalsIgnoreCase(uri.getScheme())) {
@@ -67,6 +88,37 @@ public class UrlTestService {
         );
 
         JobAssessment assessment = scorer.assess(job, profiles.build());
+
+        if (useGemini) {
+            String apiKey = System.getenv("GEMINI_API_KEY");
+            if (apiKey == null || apiKey.isBlank()) {
+                throw new IllegalArgumentException("GEMINI_API_KEY is required when Gemini semantic analysis is enabled");
+            }
+            var semantic = semanticAnalyzer.analyze(job.description(), job.title());
+            assessment = semanticScorer.augment(
+                    assessment, semantic.understanding(), semantic.usedProvider()).assessment();
+        }
+
+        List<ReferralModels.ReferralTarget> referrals = List.of();
+        if (searchLinkedIn) {
+            String apiKey = System.getenv("BRAVE_SEARCH_API_KEY");
+            if (apiKey == null || apiKey.isBlank()) {
+                throw new IllegalArgumentException("BRAVE_SEARCH_API_KEY is required when LinkedIn referral search is enabled");
+            }
+            referrals = referralResearcher.findTargets(job.company(), job.title(), 10);
+        }
+
+        boolean emailSent = false;
+        if (sendEmail) {
+            String recipient = System.getenv("CR_EMAIL_TO");
+            if (recipient == null || recipient.isBlank()) {
+                throw new IllegalArgumentException("CR_EMAIL_TO is required when email delivery is enabled");
+            }
+            var applicationPackage = packageBuilder.build(job, assessment);
+            emailDeliveryService.sendPackage(job, assessment, referrals, applicationPackage, recipient);
+            emailSent = true;
+        }
+
         return new Result(
                 url,
                 job,
@@ -76,7 +128,12 @@ public class UrlTestService {
                 assessment.hardFailReasons(),
                 assessment.matchedSkills(),
                 assessment.missingSkills(),
-                assessment.rationale()
+                assessment.rationale(),
+                assessment.semanticStatus(),
+                assessment.semanticProvider(),
+                assessment.semanticAlignment(),
+                referrals.size(),
+                emailSent
         );
     }
 
@@ -89,5 +146,10 @@ public class UrlTestService {
             java.util.List<String> hardFailReasons,
             java.util.List<String> matchedSkills,
             java.util.List<String> missingSkills,
-            String rationale) {}
+            String rationale,
+            String semanticStatus,
+            String semanticProvider,
+            double semanticAlignment,
+            int referralCount,
+            boolean emailSent) {}
 }
