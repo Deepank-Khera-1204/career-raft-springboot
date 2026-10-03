@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class DueSourceRunner {
@@ -37,6 +38,13 @@ public class DueSourceRunner {
         Instant now = Instant.now();
         String runId = "run-" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
         repository.startRunnerRun(runId, now);
+
+        /*
+         * Semantic LLM budget is scoped to this runner invocation. This prevents
+         * one scheduled run from exhausting the singleton service's budget for
+         * all future runs.
+         */
+        AtomicInteger semanticCalls = new AtomicInteger();
 
         int checked = 0, due = 0, succeeded = 0, sourceFailures = 0;
         int fetched = 0, newlyInserted = 0, duplicates = 0, rejected = 0, failed = 0, packages = 0, referrals = 0, emails = 0, duplicateEmails = 0;
@@ -83,7 +91,8 @@ public class DueSourceRunner {
                             continue;
                         }
 
-                        CareerRaftService.AssessmentResult result = service.assessInsertedJob(job, true);
+                        CareerRaftService.AssessmentResult result =
+                                service.assessInsertedJob(job, true, semanticCalls);
                         results.add(result);
                         referrals += result.referrals().size();
                         emails += result.emailSent() ? 1 : 0;
