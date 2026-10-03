@@ -74,6 +74,34 @@ Referral research:
 
 Application submission remains manual-only. Career Raft prepares packages and approvals; it does not submit applications automatically.
 
+## CI / Scheduled runner
+
+The repository uses three GitHub Actions workflows:
+
+    .github/workflows/ci.yml
+    .github/workflows/container.yml
+    .github/workflows/scheduled-run.yml
+
+The normal CI path caches the Maven repository through `setup-java`, so unchanged dependencies are not downloaded on every test run. GitHub-hosted runners are still ephemeral, so the cache is the reusable dependency layer.
+
+The scheduled runner does not install Maven, TeX Live, or PDF tooling on every invocation. Those heavyweight runtime dependencies are baked into the Docker image once and the image build uses GitHub Actions' BuildKit cache. Scheduled runs only pull the prepared runtime image, execute `run-due`, and persist `data/career_raft.sqlite`.
+
+The scheduler wakes twice per hour at minute 17 and 47 in Asia/Kolkata. The application's persisted source state determines which sources are actually due, so a wake-up does not imply a fetch from every source.
+
+The scheduled workflow requires these repository secrets when the corresponding integrations are enabled:
+
+    GEMINI_API_KEY
+    BRAVE_SEARCH_API_KEY
+    CR_EMAIL_TO
+    CR_EMAIL_FROM
+    CR_SMTP_HOST
+    CR_SMTP_PORT
+    CR_SMTP_USERNAME
+    CR_SMTP_PASSWORD
+    CR_SMTP_USE_TLS
+
+The one-shot runner returns a non-zero process exit code when the run is failed or any job fails, so GitHub Actions can correctly mark the scheduled execution red.
+
 ## Docker
 
 Build from the repository root:
