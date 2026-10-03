@@ -6,8 +6,8 @@ Java 21 + Spring Boot implementation of Career Raft.
 
 From the repository root:
 
-    mvn -f java-springboot/pom.xml test
-    mvn -f java-springboot/pom.xml spring-boot:run
+    mvn test
+    mvn spring-boot:run
 
 The service listens on port 8080.
 
@@ -78,6 +78,6 @@ Application submission remains manual-only. Career Raft prepares packages and ap
 
 Build from the repository root:
 
-    mvn -f java-springboot/pom.xml package -DskipTests
-    docker build -f java-springboot/Dockerfile -t career-raft-java .
+    mvn package -DskipTests
+    docker build -f Dockerfile -t career-raft-java .
     docker run --rm -p 8080:8080 career-raft-java
