@@ -13,7 +13,7 @@ on:
         default: false
         type: boolean
       linkedin:
-        description: "Run Brave-powered LinkedIn referral search"
+        description: "Run Tavily-powered LinkedIn referral search"
         required: true
         default: false
         type: boolean
@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   dispatch-test-branch:
-    name: Run test/url branch
+    name: Run test/url-tavily branch
     runs-on: ubuntu-24.04
     timeout-minutes: 5
 
@@ -44,11 +44,11 @@ jobs:
         run: |
           gh workflow run test-url.yml \
             --repo "${{ github.repository }}" \
-            --ref test/url \
+            --ref test/url-tavily \
             -f "url=${URL}" \
             -f "gemini=${GEMINI}" \
             -f "linkedin=${LINKEDIN}" \
             -f "email=${EMAIL}"
 
       - name: Confirm dispatch
-        run: echo "Dispatched test/url URL test workflow."
+        run: echo "Dispatched test/url-tavily URL test workflow."
