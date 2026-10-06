@@ -2,7 +2,6 @@
 /.github
 /.idea
 /.vscode
-/target/*
 /src
 pom.xml
 *.iml
