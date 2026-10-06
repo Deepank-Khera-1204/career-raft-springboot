@@ -23,19 +23,29 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  IMAGE_NAME: ghcr.io/deepank-khera-1204/career-raft-java:main
+  IMAGE_NAME: ghcr.io/deepank-khera-1204/career-raft-java
 
 jobs:
   run-due:
     name: Run due sources
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
           fetch-depth: 1
+
+      # The image is pinned to the exact repository commit being executed.
+      # This prevents a scheduled run from accidentally using a stale :main tag.
+      - name: Set up Java 21 for image fallback
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: pom.xml
 
       - name: Log in to GHCR
         uses: docker/login-action@v4
@@ -44,11 +54,32 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull runtime image
-        run: docker pull "${IMAGE_NAME}"
+      - name: Pull commit-pinned runtime image
+        id: pull-image
+        continue-on-error: true
+        env:
+          IMAGE_REF: "${{ env.IMAGE_NAME }}:${{ github.sha }}"
+        run: |
+          echo "Runtime image: ${IMAGE_REF}"
+          docker pull "${IMAGE_REF}"
+
+      - name: Build runtime image locally when the published image is unavailable
+        if: ${{ steps.pull-image.outcome == 'failure' }}
+        env:
+          IMAGE_REF: "${{ env.IMAGE_NAME }}:${{ github.sha }}"
+        run: |
+          echo "Published runtime image is unavailable; building from this exact checkout."
+          mvn --batch-mode --no-transfer-progress -DskipTests package
+          docker build --tag "${IMAGE_REF}" .
+
+      - name: Verify runtime image
+        env:
+          IMAGE_REF: "${{ env.IMAGE_NAME }}:${{ github.sha }}"
+        run: docker image inspect "${IMAGE_REF}" >/dev/null
 
       - name: Run Career Raft
         env:
+          IMAGE_REF: "${{ env.IMAGE_NAME }}:${{ github.sha }}"
           CAREER_RAFT_RUN_ON_START: "true"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           BRAVE_SEARCH_API_KEY: ${{ secrets.BRAVE_SEARCH_API_KEY }}
@@ -62,17 +93,41 @@ jobs:
           CR_SEND_EMAIL: ${{ github.event_name == 'schedule' && 'true' || inputs.send_email }}
           CR_ENABLE_LINKEDIN: "true"
         run: |
-          docker run --rm --init             --user "$(id -u):$(id -g)"             -v "${GITHUB_WORKSPACE}/data:/app/data"             -e CAREER_RAFT_RUN_ON_START             -e GEMINI_API_KEY             -e BRAVE_SEARCH_API_KEY             -e CR_EMAIL_TO             -e CR_EMAIL_FROM             -e CR_SMTP_HOST             -e CR_SMTP_PORT             -e CR_SMTP_USERNAME             -e CR_SMTP_PASSWORD             -e CR_SMTP_USE_TLS             -e CR_SEND_EMAIL             -e CR_ENABLE_LINKEDIN             "${IMAGE_NAME}"
+          docker run --rm --init \
+            --user "$(id -u):$(id -g)" \
+            -v "${GITHUB_WORKSPACE}/data:/app/data" \
+            -e CAREER_RAFT_RUN_ON_START \
+            -e GEMINI_API_KEY \
+            -e BRAVE_SEARCH_API_KEY \
+            -e CR_EMAIL_TO \
+            -e CR_EMAIL_FROM \
+            -e CR_SMTP_HOST \
+            -e CR_SMTP_PORT \
+            -e CR_SMTP_USERNAME \
+            -e CR_SMTP_PASSWORD \
+            -e CR_SMTP_USE_TLS \
+            -e CR_SEND_EMAIL \
+            -e CR_ENABLE_LINKEDIN \
+            "${IMAGE_REF}"
 
+      # The first successful run may create the SQLite file from scratch.
+      # If the application failed before opening the DB, there is nothing to commit.
       - name: Persist scheduler state
         if: ${{ always() }}
         run: |
+          if [[ ! -f data/career_raft.sqlite ]]; then
+            echo "No scheduler database exists; nothing to persist."
+            exit 0
+          fi
+
           git config user.name "career-raft[bot]"
           git config user.email "career-raft[bot]@users.noreply.github.com"
           git add -f data/career_raft.sqlite
-          if git diff --cached --quiet; then
+
+          if git diff --cached --quiet -- data/career_raft.sqlite; then
             echo "No state changes to persist."
             exit 0
           fi
+
           git commit -m "chore: persist Career Raft state [skip ci]"
           git push
